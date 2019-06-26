@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using VideoRental.CustomAttributes;
 
 namespace VideoRental.Models
 {
@@ -15,6 +16,7 @@ namespace VideoRental.Models
         public string Name { get; set; }
 
         [Display(Name ="Date of Birth")]
+        [DateOfBirthValidationAttribute]
         public DateTime? BirthDate { get; set; }
 
         public bool IsSubscribedToNewsletter { get; set; }
