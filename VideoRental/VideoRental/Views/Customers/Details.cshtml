@@ -5,6 +5,12 @@
 }
 
 <h2>@Model.Name</h2>
+<ul>
+    @if (Model.BirthDate != null)
+    {
+        <li>Birthdate: @Model.BirthDate</li>
+    }
+</ul>
 
 
 
