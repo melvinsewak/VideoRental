@@ -5,6 +5,7 @@ using VideoRental.Models;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using VideoRental.ViewModels;
+using System;
 
 namespace VideoRental.Controllers
 {
@@ -30,9 +31,57 @@ namespace VideoRental.Controllers
             return View(movies);
         }
 
-        private Movie GetMovieDetails(int id)
+        [Route("Movies/New")]
+        public async Task<ActionResult> New()
         {
-            return _context.Movies.Include(m=>m.Genre).SingleOrDefault(m => m.Id==id);
+            var movieFormViewModel = new MovieFormViewModel
+            {
+                Movie = new Movie(),
+                Genre = await _context.Genres.ToListAsync()
+            };
+            return View("MovieForm",movieFormViewModel);
+        }
+
+        [Route("Movies/Edit/{id}")]
+        public async Task<ActionResult> Edit(int id)
+        {
+            var movieFormViewModel = new MovieFormViewModel
+            {
+                Movie = await _context.Movies.Include(m => m.Genre).SingleAsync(m=>m.Id==id),
+                Genre = await _context.Genres.ToListAsync()
+            };
+            return View("MovieForm", movieFormViewModel);
+        }
+
+        [Route("Movies/Save")]
+        public async Task<ActionResult> Save(Movie movie)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new MovieFormViewModel()
+                {
+                    Movie = movie,
+                    Genre = await _context.Genres.ToListAsync()
+                };
+                return View("MovieForm",viewModel);
+            }
+
+            if (movie.Id == 0)
+            {
+                movie.AdditionDate = DateTime.Now;
+                _context.Movies.Add(movie);
+            }
+            else
+            {
+                var movieInDb = await _context.Movies.Include(m => m.Genre).SingleAsync(m => m.Id == movie.Id);
+                movieInDb.Name = movie.Name;
+                movieInDb.ReleaseDate = movie.ReleaseDate;
+                movieInDb.AdditionDate = DateTime.Now;
+                movieInDb.GenreId = movie.GenreId;
+                movieInDb.NumberInStock = movie.NumberInStock;
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Movies");
         }
 
         private IEnumerable<Movie> GetMovies()
