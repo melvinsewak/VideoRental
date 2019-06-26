@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using VideoRental.Models;
 
 namespace VideoRental.Controllers
@@ -22,6 +23,7 @@ namespace VideoRental.Controllers
             _context.Dispose();
         }
 
+        [Route("Customers")]
         // GET: Customers
         public ActionResult Index()
         {
@@ -29,9 +31,21 @@ namespace VideoRental.Controllers
             return View(customers);
         }
 
+        [Route("Customers/Details/{id}")]
+        public ActionResult Details(int id)
+        {
+            var customer = GetCustomerDetails(id);
+            return View(customer);
+        }
+
         private IEnumerable<Customer> GetCustomers()
         {
             return _context.Customers.Include(c => c.MembershipType).ToList();
+        }
+
+        private Customer GetCustomerDetails(int id)
+        {
+            return _context.Customers.SingleOrDefault(c => c.Id == id);
         }
     }
 }
