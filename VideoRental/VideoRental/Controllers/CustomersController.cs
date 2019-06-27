@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -81,7 +82,16 @@ namespace VideoRental.Controllers
                 customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
                 customerInDb.MembershipTypeId = customer.MembershipTypeId;
             }
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index","Customers");
         }
 

@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Threading.Tasks;
 using VideoRental.ViewModels;
 using System;
+using System.Data.Entity.Validation;
 
 namespace VideoRental.Controllers
 {
@@ -80,7 +81,16 @@ namespace VideoRental.Controllers
                 movieInDb.GenreId = movie.GenreId;
                 movieInDb.NumberInStock = movie.NumberInStock;
             }
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index", "Movies");
         }
 

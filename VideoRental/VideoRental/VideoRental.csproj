@@ -236,6 +236,10 @@
     <Compile Include="Migrations\201906261957257_MovieReleaseDateNonMandatory.Designer.cs">
       <DependentUpon>201906261957257_MovieReleaseDateNonMandatory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906270327128_MembershipTypeStaticFields.cs" />
+    <Compile Include="Migrations\201906270327128_MembershipTypeStaticFields.Designer.cs">
+      <DependentUpon>201906270327128_MembershipTypeStaticFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -371,6 +375,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906261957257_MovieReleaseDateNonMandatory.resx">
       <DependentUpon>201906261957257_MovieReleaseDateNonMandatory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906270327128_MembershipTypeStaticFields.resx">
+      <DependentUpon>201906270327128_MembershipTypeStaticFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
