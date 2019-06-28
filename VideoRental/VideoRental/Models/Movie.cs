@@ -14,8 +14,9 @@ namespace VideoRental.Models
         [StringLength(255)]
         public string Name { get; set; }
 
+        [Required]
         [Display(Name="Release Date")]
-        public DateTime? ReleaseDate { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
         [Display(Name = "Addition Date")]
         public DateTime AdditionDate { get; set; }
@@ -27,6 +28,7 @@ namespace VideoRental.Models
         public byte GenreId { get; set; }
 
         [Required]
+        [Range(1,20)]
         [Display(Name = "Number in Stock")]
         public int NumberInStock { get; set; }
     }

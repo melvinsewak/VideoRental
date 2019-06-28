@@ -1,7 +1,9 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -30,57 +32,63 @@ namespace VideoRental.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            var customers = GetCustomers();
-            return View(customers);
+            var listOfCustomers = GetCustomers();
+            return View(listOfCustomers);
         }
 
         [Route("Customers/New")]
         public async Task<ActionResult> New()
         {
-            var customerFormViewModel = new CustomerFormViewModel()
+            var membershipTypesInDb = await _context.MembershipTypes.ToListAsync();
+            var viewModel = new CustomerFormViewModel
             {
-                Customer=new Customer(),
-                MembershipTypes = await _context.MembershipTypes.ToListAsync()
+                MembershipTypes = membershipTypesInDb.Select(Mapper.Map<MembershipType, MembershipTypeViewModel>)
             };
-            return View("CustomerForm", customerFormViewModel);
+            return View("CustomerForm", viewModel);
         }
 
         [Route("Customers/Edit/{id}")]
         public async Task<ActionResult> Edit(int id)
         {
-            var customerFormViewModel = new CustomerFormViewModel()
-            {
-                Customer=_context.Customers.Include(c=>c.MembershipType).Single(c=>c.Id==id),
-                MembershipTypes = await _context.MembershipTypes.ToListAsync()
-            };
-            return View("CustomerForm", customerFormViewModel);
+            var customerInDB = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(c => c.Id == id);
+
+            if (customerInDB == null)
+                return HttpNotFound();
+
+            var membershipTypesInDb = await _context.MembershipTypes.ToListAsync();
+            var viewModel = new CustomerFormViewModel();
+
+            Mapper.Map(customerInDB, viewModel);
+            viewModel.MembershipTypes = membershipTypesInDb.Select(Mapper.Map<MembershipType, MembershipTypeViewModel>);
+
+            return View("CustomerForm", viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("Customers/Save")]
-        public async Task<ActionResult> Save(Customer customer)
+        public async Task<ActionResult> Save(CustomerFormViewModel customerFormViewModel)
         {
             if (!ModelState.IsValid)
             {
-                var customerFormViewModel = new CustomerFormViewModel()
-                {
-                    Customer = customer,
-                    MembershipTypes = await _context.MembershipTypes.ToListAsync()
-                };
-
+                var membershipTypesInDb = await _context.MembershipTypes.ToListAsync();
+                customerFormViewModel.MembershipTypes = membershipTypesInDb.Select(Mapper.Map<MembershipType, MembershipTypeViewModel>);
                 return View("CustomerForm", customerFormViewModel);
             }
 
-            if (customer.Id == 0)
+            if (customerFormViewModel.Id == 0)
             {
-                _context.Customers.Add(customer);
+                var customerTobeAdded = Mapper.Map<CustomerFormViewModel, Customer>(customerFormViewModel);
+                _context.Customers.Add(customerTobeAdded);
             }
             else
             {
-                var customerInDb = await _context.Customers.SingleAsync(c => c.Id == customer.Id);
-                customerInDb.Name = customer.Name;
-                customerInDb.BirthDate = customer.BirthDate;
-                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                var customerToBeUpdated = await _context.Customers.SingleOrDefaultAsync(c => c.Id == customerFormViewModel.Id);
+
+                if (customerToBeUpdated == null)
+                    return HttpNotFound();
+
+                Mapper.Map(customerFormViewModel, customerToBeUpdated);
             }
 
             try
@@ -89,20 +97,23 @@ namespace VideoRental.Controllers
             }
             catch (DbEntityValidationException e)
             {
-                Console.WriteLine(e.Message);
+                var customerRrrorMessage="Following validation error occurred:\n";
+                foreach (var error in e.EntityValidationErrors)
+                {
+                    foreach (var validationError in error.ValidationErrors)
+                    {
+                        customerRrrorMessage += validationError.ErrorMessage+"\n";
+                    }
+                }
+                Debug.WriteLine(customerRrrorMessage);
             }
 
             return RedirectToAction("Index","Customers");
         }
 
-        private IEnumerable<Customer> GetCustomers()
+        private IEnumerable<CustomerIndexViewModel> GetCustomers()
         {
-            return _context.Customers.Include(c => c.MembershipType).ToList();
-        }
-
-        private Customer GetCustomerDetails(int id)
-        {
-            return _context.Customers.SingleOrDefault(c => c.Id == id);
+            return _context.Customers.Include(c => c.MembershipType).ToList().Select(Mapper.Map<Customer,CustomerIndexViewModel>);
         }
     }
 }

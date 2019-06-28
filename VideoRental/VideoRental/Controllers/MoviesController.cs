@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using VideoRental.ViewModels;
 using System;
 using System.Data.Entity.Validation;
+using AutoMapper;
+using System.Diagnostics;
 
 namespace VideoRental.Controllers
 {
     public class MoviesController : Controller
     {
-        ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public MoviesController()
         {
@@ -28,58 +30,52 @@ namespace VideoRental.Controllers
         [Route("Movies")]
         public ActionResult Index()
         {
-            var movies = GetMovies();
-            return View(movies);
+            var viewModel = GetMovies();
+            return View(viewModel);
         }
 
         [Route("Movies/New")]
         public async Task<ActionResult> New()
         {
-            var movieFormViewModel = new MovieFormViewModel
-            {
-                Movie = new Movie(),
-                Genre = await _context.Genres.ToListAsync()
-            };
-            return View("MovieForm",movieFormViewModel);
+            var genresInDb = await _context.Genres.ToListAsync();
+            var viewModel = new MovieFormViewModel();
+            viewModel.Genres = genresInDb.Select(Mapper.Map<Genre, GenreViewModel>);
+            return View("MovieForm", viewModel);
         }
 
         [Route("Movies/Edit/{id}")]
         public async Task<ActionResult> Edit(int id)
         {
-            var movieFormViewModel = new MovieFormViewModel
-            {
-                Movie = await _context.Movies.Include(m => m.Genre).SingleAsync(m=>m.Id==id),
-                Genre = await _context.Genres.ToListAsync()
-            };
-            return View("MovieForm", movieFormViewModel);
+            var genresInDb = await _context.Genres.ToListAsync();
+            var viewModel = new MovieFormViewModel();
+            var movieInDb = await _context.Movies.Include(m => m.Genre).SingleAsync(m => m.Id == id);
+            viewModel.Genres = genresInDb.Select(Mapper.Map<Genre,GenreViewModel>);
+            Mapper.Map(movieInDb, viewModel);
+            return View("MovieForm", viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("Movies/Save")]
-        public async Task<ActionResult> Save(Movie movie)
+        public async Task<ActionResult> Save(MovieFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                var viewModel = new MovieFormViewModel()
-                {
-                    Movie = movie,
-                    Genre = await _context.Genres.ToListAsync()
-                };
+                var genresInDb = await _context.Genres.ToListAsync();
+                viewModel.Genres = genresInDb.Select(Mapper.Map<Genre, GenreViewModel>);
                 return View("MovieForm",viewModel);
             }
 
-            if (movie.Id == 0)
+            if (viewModel.Id == 0)
             {
-                movie.AdditionDate = DateTime.Now;
-                _context.Movies.Add(movie);
+                var movieTobeAdded = Mapper.Map<MovieFormViewModel,Movie>(viewModel);
+                movieTobeAdded.AdditionDate= DateTime.Now;
+                _context.Movies.Add(movieTobeAdded);
             }
             else
             {
-                var movieInDb = await _context.Movies.Include(m => m.Genre).SingleAsync(m => m.Id == movie.Id);
-                movieInDb.Name = movie.Name;
-                movieInDb.ReleaseDate = movie.ReleaseDate;
-                movieInDb.AdditionDate = DateTime.Now;
-                movieInDb.GenreId = movie.GenreId;
-                movieInDb.NumberInStock = movie.NumberInStock;
+                var movieInDb = await _context.Movies.Include(m => m.Genre).SingleAsync(m => m.Id == viewModel.Id);
+                Mapper.Map(viewModel, movieInDb);
             }
 
             try
@@ -88,15 +84,23 @@ namespace VideoRental.Controllers
             }
             catch (DbEntityValidationException e)
             {
-                Console.WriteLine(e.Message);
+                var movieRrrorMessage = "Following validation error occurred:\n";
+                foreach (var error in e.EntityValidationErrors)
+                {
+                    foreach (var validationError in error.ValidationErrors)
+                    {
+                        movieRrrorMessage += validationError.ErrorMessage + "\n";
+                    }
+                }
+                Debug.WriteLine(movieRrrorMessage);
             }
 
             return RedirectToAction("Index", "Movies");
         }
 
-        private IEnumerable<Movie> GetMovies()
+        private IEnumerable<MovieIndexViewModel> GetMovies()
         {
-            return _context.Movies.Include(m => m.Genre).ToList();
+            return _context.Movies.Include(m => m.Genre).ToList().Select(Mapper.Map<Movie,MovieIndexViewModel>);
         }
     }
 }

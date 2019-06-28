@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.0\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -165,6 +168,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -240,6 +244,10 @@
     <Compile Include="Migrations\201906270327128_MembershipTypeStaticFields.Designer.cs">
       <DependentUpon>201906270327128_MembershipTypeStaticFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906271427111_MovieReleaseDateRequired.cs" />
+    <Compile Include="Migrations\201906271427111_MovieReleaseDateRequired.Designer.cs">
+      <DependentUpon>201906271427111_MovieReleaseDateRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -251,7 +259,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CustomerFormViewModel.cs" />
+    <Compile Include="ViewModels\CustomerIndexViewModel.cs" />
+    <Compile Include="ViewModels\GenreViewModel.cs" />
+    <Compile Include="ViewModels\MembershipTypeViewModel.cs" />
     <Compile Include="ViewModels\MovieFormViewModel.cs" />
+    <Compile Include="ViewModels\MovieIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -378,6 +390,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906270327128_MembershipTypeStaticFields.resx">
       <DependentUpon>201906270327128_MembershipTypeStaticFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906271427111_MovieReleaseDateRequired.resx">
+      <DependentUpon>201906271427111_MovieReleaseDateRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
