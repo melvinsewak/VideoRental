@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using VideoRental.Dtos;
 using VideoRental.Models;
 using VideoRental.ViewModels;
 
@@ -13,8 +14,8 @@ namespace VideoRental.App_Start
         public MappingProfile()
         {
 
-            Mapper.CreateMap<Customer, Customer>();
-            Mapper.CreateMap<Movie, Movie>();
+            Mapper.CreateMap<Customer, CustomerDto>();
+            Mapper.CreateMap<CustomerDto, Customer>();
 
             Mapper.CreateMap<Customer, CustomerIndexViewModel>();
             Mapper.CreateMap<CustomerIndexViewModel, Customer>();

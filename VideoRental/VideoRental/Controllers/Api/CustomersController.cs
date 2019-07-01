@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using VideoRental.Dtos;
 using VideoRental.Models;
 
 namespace VideoRental.Controllers.Api
@@ -26,53 +27,51 @@ namespace VideoRental.Controllers.Api
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Customer>> GetCustomers()
+        public async Task<IEnumerable<CustomerDto>> GetCustomers()
         {
-            return await _context.Customers.Include(c => c.MembershipType).ToListAsync();
+            var customersInDb= await _context.Customers.Include(c => c.MembershipType).ToListAsync();
+            return customersInDb.Select(Mapper.Map<Customer,CustomerDto>);
         }
 
         [HttpGet]
-        public async Task<Customer> GetCustomer(int id)
+        public async Task<IHttpActionResult> GetCustomer(int id)
         {
             var customerInDb= await _context.Customers.Include(c=>c.MembershipType).SingleOrDefaultAsync(c=>c.Id==id);
 
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-
-            return customerInDb;
+                return NotFound();
+            
+            return Ok(Mapper.Map<Customer,CustomerDto>(customerInDb));
         }
 
         [HttpPut]
-        public async Task<Customer> UpdateCustomer(int id, Customer customer)
+        public async Task<IHttpActionResult> UpdateCustomer(int id, CustomerDto customerDto)
         {
-            if(!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             var customerInDb = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(c => c.Id == id);
 
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            customerInDb.Name = customer.Name;
-            customerInDb.BirthDate = customer.BirthDate;
-            customerInDb.MembershipTypeId = customer.MembershipTypeId;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            customerInDb.MembershipType = await _context.MembershipTypes.SingleOrDefaultAsync(c=>c.Id==customerInDb.MembershipTypeId);
+            Mapper.Map(customerDto, customerInDb);
 
            await  _context.SaveChangesAsync();
-            return customerInDb;
+            return Ok(customerDto);
         }
 
         [HttpPost]
-        public async Task<Customer> AddCustomer(Customer customer)
+        public async Task<IHttpActionResult> AddCustomer(CustomerDto customerDto)
         {
 
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
 
+            var customer = Mapper.Map<CustomerDto,Customer>(customerDto);
             var newCustomer=_context.Customers.Add(customer);
             await _context.SaveChangesAsync();
-            return newCustomer;
+            return Created(new Uri(Request.RequestUri + "/" + newCustomer.Id), Mapper.Map(newCustomer, customerDto));
         }
     }
 }
