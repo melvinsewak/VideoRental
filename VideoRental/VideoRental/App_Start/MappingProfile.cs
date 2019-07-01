@@ -12,6 +12,10 @@ namespace VideoRental.App_Start
     {
         public MappingProfile()
         {
+
+            Mapper.CreateMap<Customer, Customer>();
+            Mapper.CreateMap<Movie, Movie>();
+
             Mapper.CreateMap<Customer, CustomerIndexViewModel>();
             Mapper.CreateMap<CustomerIndexViewModel, Customer>();
 
