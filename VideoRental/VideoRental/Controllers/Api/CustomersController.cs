@@ -73,5 +73,19 @@ namespace VideoRental.Controllers.Api
             await _context.SaveChangesAsync();
             return Created(new Uri(Request.RequestUri + "/" + newCustomer.Id), Mapper.Map(newCustomer, customerDto));
         }
+
+        [HttpDelete]
+        public async Task<IHttpActionResult> RemoveCustomer(int id)
+        {
+            var customerInDb = await _context.Customers.SingleOrDefaultAsync(c => c.Id == id);
+
+            if (customerInDb == null)
+                return NotFound();
+
+            _context.Customers.Remove(customerInDb);
+            await _context.SaveChangesAsync();
+
+            return Ok(Mapper.Map<Customer, CustomerDto>(customerInDb));
+        }
     }
 }

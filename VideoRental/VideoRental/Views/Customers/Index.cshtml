@@ -1,5 +1,4 @@
-﻿@model IEnumerable<VideoRental.ViewModels.CustomerIndexViewModel>
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -12,13 +11,8 @@
     <br />
 </div>
 
-@if (!Model.Any())
-{
-    <p>Currently we don't have any Customers.</p>
-}
-else
-{
-    <table class="table table-bordered table-hover">
+<div>
+    <table id="customersList" class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>
@@ -27,22 +21,66 @@ else
                 <th>
                     Membership Type
                 </th>
+                <th>
+                    Delete
+                </th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (var customer in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.ActionLink(customer.Name, "Edit", "Customers", new { id = customer.Id }, null)
-                    </td>
-                    <td>
-                        @customer.MembershipType.Name
-                    </td>
-                </tr>
-            }
-        </tbody>
+        <tbody></tbody>
     </table>
+</div>
 
+
+@section scripts
+{
+    <!--NOTE: Jquery Code-->
+    <script>
+        $(document).ready(function () {
+
+            let table = $("#customersList").DataTable({
+                ajax: {
+                    url: "/api/customers/",
+                    //NOTE: dataSrc is "" to show that the result is an array that contains the object directly. 
+                    //It is not stores inside any other object
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        //NOTE: data is the variable name that holds the data for the row and render calls a function executed for every row
+                        data: "name",
+                        render: function (data, type, rowData) {
+                            return "<a href='/customers/edit/" + rowData.id + "'>"+rowData.name+"</a>";
+                        }
+                    },
+                    {
+                        data:"membershipType.name"
+                    },
+                    {
+                        data:"id",
+                        render: function (data, type, rowData) {
+                            return "<button class='btn btn-link js-delete' data-customer-id=" + rowData.id + ">Delete</button>";
+                        }
+                    }
+                ]
+                
+            });
+
+            $("#customersList").on("click", ".js-delete", function () {
+                let button = $(this);
+                bootbox.confirm("Are you sure you want to delete this customer?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/customers/" + button.attr("data-customer-id"),
+                            method: "Delete",
+                            success: function () {
+                                //NOTE: To remove the row use this code
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+
+                });
+            });
+        });
+    </script>
 }
-

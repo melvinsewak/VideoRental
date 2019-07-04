@@ -14,6 +14,9 @@ namespace VideoRental
             //NOTE: AutoMapper and WebApi registration
             GlobalConfiguration.Configure(WebApiConfig.Register);
             Mapper.Initialize(c=>c.AddProfile<MappingProfile>());
+            //var config = new MapperConfiguration(cfg => {
+            //    cfg.AddProfile<MappingProfile>();
+            //});
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

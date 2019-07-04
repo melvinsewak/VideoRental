@@ -13,28 +13,29 @@ namespace VideoRental.App_Start
     {
         public MappingProfile()
         {
+            CreateMap<Customer, CustomerDto>();
+            CreateMap<CustomerDto, Customer>();
 
-            Mapper.CreateMap<Customer, CustomerDto>();
-            Mapper.CreateMap<CustomerDto, Customer>();
+            CreateMap<Customer, CustomerIndexViewModel>();
+            CreateMap<CustomerIndexViewModel, Customer>();
 
-            Mapper.CreateMap<Customer, CustomerIndexViewModel>();
-            Mapper.CreateMap<CustomerIndexViewModel, Customer>();
+            CreateMap<Customer, CustomerFormViewModel>();
+            CreateMap<CustomerFormViewModel, Customer>();
 
-            Mapper.CreateMap<Customer, CustomerFormViewModel>();
-            Mapper.CreateMap<CustomerFormViewModel, Customer>();
+            CreateMap<MembershipType, MembershipTypeViewModel>();
+            CreateMap<MembershipTypeViewModel, MembershipType>();
 
-            Mapper.CreateMap<MembershipType, MembershipTypeViewModel>();
-            Mapper.CreateMap<MembershipTypeViewModel, MembershipType>();
+            CreateMap<MembershipType, MembershipTypeDto>();
+            CreateMap<MembershipTypeDto, MembershipType>();
 
-            Mapper.CreateMap<Movie, MovieIndexViewModel>();
-            Mapper.CreateMap<MovieIndexViewModel, Movie>();
+            CreateMap<Movie, MovieIndexViewModel>();
+            CreateMap<MovieIndexViewModel, Movie>();
 
-            Mapper.CreateMap<Movie, MovieFormViewModel>();
-            Mapper.CreateMap<MovieFormViewModel, Movie>();
+            CreateMap<Movie, MovieFormViewModel>();
+            CreateMap<MovieFormViewModel, Movie>();
 
-            Mapper.CreateMap<Genre, GenreViewModel>();
-            Mapper.CreateMap<GenreViewModel, Genre>();
-
+            CreateMap<Genre, GenreViewModel>();
+            CreateMap<GenreViewModel, Genre>();
         }
     }
 }
