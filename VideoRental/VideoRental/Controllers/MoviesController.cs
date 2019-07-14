@@ -33,9 +33,14 @@ namespace VideoRental.Controllers
         public ActionResult Index()
         {
             var viewModel = GetMovies();
-            return View(viewModel);
+
+            if(User.IsInRole(CustomRoles.CanManageMovies))
+                return View("List",viewModel);
+
+            return View("ReadOnlyList",viewModel);
         }
 
+        [Authorize(Roles =CustomRoles.CanManageMovies)]
         [Route("Movies/New")]
         public async Task<ActionResult> New()
         {

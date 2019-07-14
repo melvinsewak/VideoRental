@@ -46,3 +46,6 @@ Client-side Development
 	Tip: You can use Angular/ember/Backbone.js on client and ASP/Net Web API on server side.
 
 Authentication and Authorization
+	Granting and Restricting Access (Global AuthorizeAttribute filter and Local [Authorize] and [AllowAnonymous] filters)
+	Role based functionality
+	Seeding users and roles using Migration

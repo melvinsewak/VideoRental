@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using VideoRental.Models;
@@ -155,6 +156,12 @@ namespace VideoRental.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    //NOTE: Temporary code to seed user and roles
+                    //var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext()); //STEP 1: Create Role Store
+                    //var roleManager = new RoleManager<IdentityRole>(roleStore); //STEP 2: Create Role Manager from Role Store
+                    //await roleManager.CreateAsync(new IdentityRole(CustomRoles.CanManageMovies)); //STEP 3: Create the role using Role Manager
+                    //await UserManager.AddToRoleAsync(user.Id, CustomRoles.CanManageMovies); //STEP 4: Assign role to the user
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
