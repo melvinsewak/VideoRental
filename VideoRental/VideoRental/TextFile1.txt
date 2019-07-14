@@ -49,3 +49,4 @@ Authentication and Authorization
 	Granting and Restricting Access (Global AuthorizeAttribute filter and Local [Authorize] and [AllowAnonymous] filters)
 	Role based functionality
 	Seeding users and roles using Migration
+	Adding profile data
