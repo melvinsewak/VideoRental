@@ -47,6 +47,7 @@ Client-side Development
 
 Authentication and Authorization
 	Granting and Restricting Access (Global AuthorizeAttribute filter and Local [Authorize] and [AllowAnonymous] filters)
-	Role based functionality
+	Extending ASP.NET Identity Users and Roles based on application functionality
 	Seeding users and roles using Migration
 	Adding profile data
+	OAuth and social logins - PENDING
