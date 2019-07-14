@@ -50,6 +50,7 @@ namespace VideoRental.Controllers
             return View("MovieForm", viewModel);
         }
 
+        [Authorize(Roles =CustomRoles.CanManageMovies)]
         [Route("Movies/Edit/{id}")]
         public async Task<ActionResult> Edit(int id)
         {
@@ -63,6 +64,7 @@ namespace VideoRental.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles =CustomRoles.CanManageMovies)]
         [Route("Movies/Save")]
         public async Task<ActionResult> Save(MovieFormViewModel viewModel)
         {
@@ -105,6 +107,7 @@ namespace VideoRental.Controllers
             return RedirectToAction("Index", "Movies");
         }
 
+        [Authorize(Roles =CustomRoles.CanManageMovies)]
         [Route("Movies/Delete/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
