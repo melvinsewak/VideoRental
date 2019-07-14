@@ -8,11 +8,10 @@
 
 @using (Html.BeginForm("Save", "Customers"))
 {
-    @Html.ValidationSummary(true,"Please fix the following errors")
     <div class="form-group">
         @Html.LabelFor(c => c.Name)
         @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c=>c.Name) 
+        @Html.ValidationMessageFor(c => c.Name)
     </div>
     <div class="form-group">
         @Html.LabelFor(c => c.MembershipTypeId)
@@ -28,11 +27,36 @@
         @Html.CheckBoxFor(c => c.IsSubscribedToNewsletter, new { @class = "form-check-input" })
         @Html.LabelFor(c => c.IsSubscribedToNewsletter, new { @class = "form-check-label" })
     </div>
-        @Html.HiddenFor(c=>c.Id)
-        @Html.AntiForgeryToken()
+    <br />
+    //NOTE: Hidden field for Id is used because it is required in case of updating a record
+    //To give it some value there are two ways:
+    //First way is @Html.Hidden("Id", (Model != null ? Model.Id : 0))
+    //But it uses magic string.
+    //Second way is used below
+    @Html.HiddenFor(c => c.Id)
+
+    //NOTE: AntiForgeryToken() helper method helps agains CSRF (Cross-Site Request Forgery)
+    //i.e. forging a request from a different website on behalf of the user
+    //This helper method will create a token which is like a secret code and then put it as a hidden field in this form
+    //and also as a cooie containing the same token in encrypted format on the user's computer.
+    // You can check this cookie in Chrome on Resources->Cookies.
+    //So if the attacker navigates the user to another webpage then this hidden field will not be avilable to match with cookcie
+    //These two values are matched on server and if they don't match, it is an attack and the request is stopped immediately.
+    @Html.AntiForgeryToken()
+
     <button type="submit" class="btn btn-primary">Save</button>
 }
 
+<!--NOTE: This allows jqueryval script to be loaded only on the pages where this code is mentioned.
+jqueryval displays the  message as per ValidationMessageFor() helpermethod as the method generates markup which is understood by jquery script.
+So ValidationSummary() helper method acts only for server side validatio but ValidationMessageFor() helper method works for both client-side (with jQuery)
+and server-side validation.
+
+BUT CLIENT-SIDE Validations only work with standard data annotations in dotnet.
+
+TIP: Use client-side validation only for the default annotaion or validation support
+and leave the business rule validation on server-side so in case of any changes in business rules only server side code is changed.
+-->
 @section scripts
 {
     @Scripts.Render("~/bundles/jqueryval")

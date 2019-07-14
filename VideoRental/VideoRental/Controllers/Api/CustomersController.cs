@@ -57,7 +57,7 @@ namespace VideoRental.Controllers.Api
 
             Mapper.Map(customerDto, customerInDb);
 
-           await  _context.SaveChangesAsync();
+            await  _context.SaveChangesAsync();
             return Ok(customerDto);
         }
 

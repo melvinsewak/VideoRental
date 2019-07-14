@@ -9,6 +9,8 @@ using System;
 using System.Data.Entity.Validation;
 using AutoMapper;
 using System.Diagnostics;
+using System.Net;
+using System.Web;
 
 namespace VideoRental.Controllers
 {
@@ -96,6 +98,21 @@ namespace VideoRental.Controllers
             }
 
             return RedirectToAction("Index", "Movies");
+        }
+
+        [Route("Movies/Delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var movieInDb = await _context.Movies.SingleOrDefaultAsync(m=>m.Id==id);
+
+            if (movieInDb == null)
+                return HttpNotFound();
+
+            _context.Movies.Remove(movieInDb);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Movies");
+
         }
 
         private IEnumerable<MovieIndexViewModel> GetMovies()

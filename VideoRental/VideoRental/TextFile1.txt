@@ -1,0 +1,48 @@
+﻿This project showcases the features of MVC5 and Web API 2 of ASP.Net framework
+
+ASP.Net MVC Fundamentals:
+	Action Results
+	Action Parameters
+	Convention-based routing
+	Attribute routing
+	Razor views
+
+Working with data:
+	Code-first Migrations
+	Seeding the database
+	Overriding conventions of entity framwork (using Data Annotations e.g. Required, StringLength etc.)
+	Querying objects (using ApplicationDbContext)
+	Eager loading (Include() method in System.Data.Entity namespace)
+
+Building Forms:
+	Markup to render mordern and responsive forms (e.g helper methods, bootstrap classes)
+	Overriding labels (Display attribute)
+	Rendering dropdown lists
+	Adding and Updating data using entity framework
+
+Implementing Validations:
+	Data Annotations(e.g. Required, StringLength etc.)
+	Custom Validation (e.g. DateOfBirthValidationAttribute by inheriting ValidationAttribute class)
+	CLient-Side Validation (e.g. jQueryval and default data annotations)
+	Anti-forgery token to prevent CSRF attacks using'AntiForgeryToken()' helper method and 'ValidateAntiForgeryToken' attribute
+
+Building Web API: (Use of WebApiConfig.cs)
+	Postman Chrome Extension
+	Data Transfer Objects (DTOs)
+	Auto Mapper (Creating MappingProfile.cs under App_Start and Global.asax.cs)
+	IHttpActionResult (Helper methods NotFound(), Ok(), Created(), BadRequest())
+	Camel Notation using config.Formatters.JsonFormatter.SerializerSettings in WebApiConfig.cs under App_Start folder
+
+Client-side Development
+	Calling an API using jQuery
+	Bootbox Plug-in (bootbox.confirm function)
+	Optimizing jQuery code (Avoiding assignment of multiple handler functions by providing filter as second argument of 'on' function)
+	jQuery DataTables plug-in with Ajax source (It avoids jQuery to parse the HTML table to extract and maintain a list of JSON objects)
+	Returning Hierarchical data using Eager loading (Include() method)
+	Removing the data from datatables' internal list of data so that modified dataset is shown.(used datatables' row(tr).remove().draw() method)
+	Data Table Optimization Tip: When dataset in huge then sorting, pagination and processing should be done on server before sending the data
+	Tip: Keep your javascript code for data access  and view rendering logic in seperate files to maintain better separtion of concerns
+	Tip: Single Page Applications (SPAs) are faster and smoother as the entire view is generated on client. 
+	Tip: You can use Angular/ember/Backbone.js on client and ASP/Net Web API on server side.
+
+Authentication and Authorization
