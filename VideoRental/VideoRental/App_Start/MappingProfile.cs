@@ -36,6 +36,13 @@ namespace VideoRental.App_Start
 
             CreateMap<Genre, GenreViewModel>();
             CreateMap<GenreViewModel, Genre>();
+
+            CreateMap<Movie, MovieDto>();
+            CreateMap<MovieDto, Movie>();
+
+            CreateMap<Genre, GenreDto>();
+            CreateMap<GenreDto, Genre>();
+
         }
     }
 }

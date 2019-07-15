@@ -21,7 +21,8 @@ namespace VideoRental.Models
 
         public bool IsSubscribedToNewsletter { get; set; }
 
-        public MembershipType MembershipType { get; set; }
+        //NOTE: If you mark this property as virtual it will be loaded lazily creating N+1 issue
+        public MembershipType MembershipType { get; set; } 
 
         [Display(Name = "Membership Type")]
         public byte MembershipTypeId { get; set; }

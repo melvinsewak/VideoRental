@@ -44,10 +44,39 @@ Client-side Development
 	Tip: Keep your javascript code for data access  and view rendering logic in seperate files to maintain better separtion of concerns
 	Tip: Single Page Applications (SPAs) are faster and smoother as the entire view is generated on client. 
 	Tip: You can use Angular/ember/Backbone.js on client and ASP/Net Web API on server side.
+	jQuery validation
 
 Authentication and Authorization
 	Granting and Restricting Access (Global AuthorizeAttribute filter and Local [Authorize] and [AllowAnonymous] filters)
 	Extending ASP.NET Identity Users and Roles based on application functionality
 	Seeding users and roles using Migration
 	Adding profile data
+	HTTPS access only (add RequireHttpsAttribute() in FilterConfig.cs)
 	OAuth and social logins - PENDING
+
+Performance Optimization
+	Tip: Do not sacrifice the maintainability of your code to premature optimization.
+	Tip: Efforts should have observable results that give value
+	Data Tier Optimization:
+		Eager Loading vs Lazy loading (using virtual keyword on porperty which causes N+1 issue)
+		Schema Optimization: Primary Keys, Relationships and Indexes
+		Query Optimization: Use Execution Plan in SQL Server, Create a "read" database (Command Query Responsibility Segregation) and Use caching
+	Application Tier Optimization
+		Output Caching
+			Enable Output Caching to cache the entire page on server (using [OutputCache(Duration =50,Location =OutputCacheLocation.Server,VaryByParam ="*")])
+			Disable Output Caching by setting Duration = 0, VaryByParam ="*" and NoStore=true
+		Data Caching can also be used for chaching data on server (MemoryCache.Default["Key"]=value)
+			Tip: async/await improve the scalability of your application(not the performance) provided you are not using single instance of SQL server
+			Tip: True scalability is achieved with cloud database like NoSQL,Azure,SQL cluster
+		Release build <= You can use them without performance profiling
+		Disabling session (<sessionState mode="Off"></sessionState> in Web.config) <= You can use them without performance profiling
+	Client Tier Optimization
+		Light weight DTOs by avoiding unnecessary properties
+		Compress JS and CSS files into bundles to avoid multiple server requests
+		Scripts should be towards end of the section to avoid delay in rendering
+		Disable Cache option in Chrome developer options to monitor performance
+	
+Pulgins:
+	Glimpse
+	Typeahead by Twitter (install-package Twitter.Typeahead)
+	toastr

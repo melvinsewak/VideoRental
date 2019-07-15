@@ -27,9 +27,14 @@ namespace VideoRental.Controllers.Api
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CustomerDto>> GetCustomers()
+        public async Task<IEnumerable<CustomerDto>> GetCustomers(string query = null)
         {
-            var customersInDb= await _context.Customers.Include(c => c.MembershipType).ToListAsync();
+            var customersQuery = _context.Customers.Include(c => c.MembershipType);
+
+            if (!string.IsNullOrWhiteSpace(query))
+                customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+
+            var customersInDb = await customersQuery.ToListAsync();
             return customersInDb.Select(Mapper.Map<Customer,CustomerDto>);
         }
 
